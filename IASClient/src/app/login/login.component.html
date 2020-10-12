@@ -1,0 +1,33 @@
+<div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+    <div class="card card-signin my-5">
+      <div class="card-body">
+        <h5 class="card-title text-center">Sign In</h5>
+        <form class="form-signin" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <div class="form-label-group">
+            <input type="text" class="form-control" placeholder="Email address" 
+                   formControlName="username" required [ngClass]="{ 'is-invalid': submitted && form.username.errors }">
+            <div *ngIf="submitted && form.username.errors" class="invalid-feedback">
+                <div *ngIf="form.username.errors.required">Username is required</div>
+            </div>
+          </div>
+
+          <div class="form-label-group">
+            <input type="password" class="form-control" placeholder="Password" 
+                   formControlName="password" required minlength="6"
+                   [ngClass]="{ 'is-invalid': submitted && form.password.errors }">
+            <div *ngIf="submitted && form.password.errors" class="invalid-feedback">
+                <div *ngIf="form.password.errors.required">Password is required</div>
+                <div *ngIf="form.password.errors.minlength">Password must be at least 6 characters</div>
+            </div>
+          </div>
+
+          <button [disabled]="loading" class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>  
+                Sign in
+            </button>
+        </form>
+
+        <a class="btn btn-lg btn-secondary btn-block text-uppercase" href="/register">Register</a>
+      </div>
+    </div>
+  </div>
