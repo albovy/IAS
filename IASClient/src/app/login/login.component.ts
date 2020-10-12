@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UserService } from 'src/app/_services/user.service'
+import { first } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-login',
@@ -15,8 +18,9 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
+    private userService: UserService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
   ) { 
     // redirect to home if already logged in
     
@@ -41,5 +45,18 @@ export class LoginComponent implements OnInit {
     }
 
     this.loading = true;
-  }   
-}
+
+    this.userService.login(this.form.username.value, this.form.password.value)
+            .pipe(first())
+            .subscribe(
+                data => {
+                    //TODO: Navigate to the next page
+                    // this.router.navigate();
+                },
+                error => {
+                    //TODO: show error message
+                    // this.alertService.error(error);
+                    this.loading = false;
+                });
+  }
+}   
