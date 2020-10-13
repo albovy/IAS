@@ -7,10 +7,11 @@ services:
       - "27017:27017"
     volumes:
       - "./mongo/data:/data/db" 
+      - "./mongodb_initialize.js:/docker-entrypoint-initdb.d/mongo_initialize.js"
     environment:
       - MONGO_INITDB_ROOT_USERNAME=ias_root
       - MONGO_INITDB_ROOT_PASSWORD=basikali
-      - MONGO_INITDB_DATABASE=test
+      - MONGO_INITDB_DATABASE=ias
     networks:
       - default
 
