@@ -32,7 +32,7 @@ class UserController {
   login(req, res, next) {
     User.findOne({ username: req.body.username }, (err, user) => {
       if (err) return next(err);
-      else if (!user) return res.status(404).send(["User not found"]);
+      else if (!user) return res.status(404).send("User not found");
       else if (!user.verifyPassword(req.body.password))
         return res.status(403).send(["Password doesn't match"]);
       else if (user) return res.status(200).json({ token: user.generateJwt() });

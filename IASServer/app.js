@@ -6,6 +6,7 @@ const logger = require('morgan');
 const jwt = require('express-jwt')
 const unless = require('express-unless');
 const mongoose = require("mongoose");
+const cors = require('cors');
 
 const config = require('./config.json')
 
@@ -24,6 +25,7 @@ const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 
+app.use(cors())
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({
