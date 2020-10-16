@@ -2,7 +2,7 @@ const multer = require('multer');
 const Picture = require('../models/Picture');
 var path = require('path');
 const { exception } = require('console');
-const { fstat, existsSync } = require('fs');
+const { fstat, existsSync, unlinkSync } = require('fs');
 
 const { CastError } = require('mongoose/lib/error/cast');
 const User = require('../models/User');
@@ -72,6 +72,34 @@ class PictureController{
         }
     }
 
+    async deletePicture(req, res, next) {
+        console.log('Delete picture endpoint');
+
+        const picture_id = req.params.picture_id;
+        try{
+            const pictureToBeDeleted = await Picture.findOneAndDelete({owner_id: req.user._id, _id: picture_id});
+            if (pictureToBeDeleted == null)
+                return res.status(404).json({reason: "Picture not found or owner_id not corresponds to the owner"});
+
+            console.log(pictureToBeDeleted);
+
+            // Delete from drive
+            const pathResolved = path.join(path.resolve(__dirname, '../pictures'), pictureToBeDeleted.uri);
+
+            console.log(pathResolved);
+            unlinkSync(pathResolved);
+            
+            return res.status(200).json({reason: "OK"});
+            
+
+        }
+        catch (err){
+            console.log(err);
+            if (err instanceof CastError)
+                return res.status(401).json({reason: "Invalid ID"});            
+            return res.status(500).send();
+        }
+    }
 
     async sharePicture(req, res, next) {
         console.log('Share picture endpoint');
@@ -107,6 +135,15 @@ class PictureController{
                 return res.status(401).json({reason: "Invalid ID"});            
             return res.status(500).send();
         }
+    }
+
+    async getAllOwnedPictures (req, res, next) {
+        // Endpoint para saber que fotografias tengo
+        console.log('getAllOwnedPictures endpoint');
+        console.log(`Requester user: ${req.user._id}`)
+        const myPictures = await Picture.find({owner_id: req.user._id});
+
+        return res.status(200).json(myPictures);
     }
 
     async unsharePicture(req, res, next) {
