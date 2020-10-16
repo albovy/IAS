@@ -12,16 +12,16 @@ class UserController {
     console.log("holaa");
 
     if (JSON.stringify(req.body) == "{}") {
-      return res.status(404).send(["Body empty"]);
+      return res.status(404).json({mesage: "Body empty"});
     } else {
       user.save((err, doc) => {
         console.log("cachis");
         if (!err) {
-          return res.status(200).send([doc]);
+          return res.status(200).json({message: "OK"});
         } else {
           console.log(err);
           if (err.code == 11000) {
-            return res.status(422).send(["Duplicate username found."]);
+            return res.status(422).json({message:"Duplicate username found."});
           }
           return next(err);
         }
@@ -32,10 +32,11 @@ class UserController {
   login(req, res, next) {
     User.findOne({ username: req.body.username }, (err, user) => {
       if (err) return next(err);
-      else if (!user) return res.status(404).send("User not found");
+      else if (!user) return res.status(404).json({message: "User not found"});
       else if (!user.verifyPassword(req.body.password))
-        return res.status(403).send(["Password doesn't match"]);
-      else if (user) return res.status(200).json({ token: user.generateJwt() });
+        return res.status(403).json({message: "Password doesn't match"});
+      else if (user)
+        res.cookie('token', user.generateJwt(), {httpOnly: true}).status(200).json({ message: "OK" });
       else next();
     });
   }

@@ -10,9 +10,9 @@ const cors = require('cors');
 
 const config = require('./config.json')
 
-const indexRouter = require('./routes/index');
 const loginRouter = require('./routes/login')
 const usersRouter = require('./routes/users');
+const pictureRouter = require('./routes/picture');
 
 const app = express();
 
@@ -23,7 +23,6 @@ mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true, use
 mongoose.Promise = global.Promise;
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
-
 
 app.use(cors())
 app.use(logger('dev'));
@@ -38,20 +37,32 @@ process.env.JWT_EXP = config.exp
 
 const jwtCheck = jwt({
   secret: process.env.JWT_SECRET,
+  getToken: (req) => req.cookies['token'],
   algorithms: ['HS256']
+});
+
+app.use('*', (req, res, next) => {
+  console.log(req.params);
+  console.log(req.body);
+  console.log(req.cookies);
+  next();
 });
 
 jwtCheck.unless = unless;
 app.use(jwtCheck.unless({
-  path: ['/api/login', {
+  path: [
+    '/api/login', {
     url: '/api/users',
     methods: ['POST']
-  }]
+  }
+]
 }));
 
-app.use('/', indexRouter);
+
+
 app.use('/api/login',loginRouter);
 app.use('/api/users', usersRouter);
+app.use('/api/pictures', pictureRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -65,8 +76,7 @@ app.use(function (err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  res.status(err.status || 500).send();
 });
 
 module.exports = app;
