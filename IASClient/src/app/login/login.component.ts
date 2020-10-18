@@ -47,7 +47,6 @@ export class LoginComponent implements OnInit {
     this.loading = true;
 
     this.userService.login(this.form.username.value, this.form.password.value)
-            .pipe(first())
             .subscribe(
                 data => {
                     //TODO: Navigate to the next page
