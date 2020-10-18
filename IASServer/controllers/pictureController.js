@@ -6,6 +6,7 @@ const { fstat, existsSync, unlinkSync } = require('fs');
 
 const { CastError } = require('mongoose/lib/error/cast');
 const User = require('../models/User');
+const { EWOULDBLOCK } = require('constants');
 var upload = multer({
     storage: multer.diskStorage({
         destination: './pictures',
@@ -148,16 +149,34 @@ class PictureController{
 
     async unsharePicture(req, res, next) {
         console.log('Unshare endpoint');
-        const pictureId = req.params.picture_id;
 
-        if (pictureId == null)
-            return res.status(403).json({reason: "Param_id empty"});
+        // Two scenarios: User is OWNER && wants to unshare to a specific user
+        //                User is NOT owner && wants to unshare specific picture
+
+        const affectedUserId = req.body.affected_user_id;
+        const pictureId = req.body.picture_id;
+
+        if (pictureId == null || affectedUser == null)
+            return res.status(403).json({reason: "Missing necessary params affected_user & picture_id"});
 
         try{
-            const pictureAffected = await Picture.findById(pictureId);
+            const pictureAffected = Picture.findById(pictureId);
+
             if (pictureAffected == null)
                 return res.status(404).json({reason: "Picture not found"});
-            if (pictureAffected.shared_with.includes(req.user._id)){
+
+            if (pictureAffected.owner_id === req.user._id && affectedUser_id !== req.user._id){
+                console.log('Owner wants to unshare file from another user');
+                if (!pictureAffected.shared_with.includes(affectedUserId)){
+                    console.log('It is not shared with this user');
+                    return res.status(400).json({reason: "Not shared with this user"});
+                }
+
+                pictureAffected.shared_with = pictureAffected.shared_with.filter((value) => value !== affectedUserId);
+                await pictureAffected.save();
+                return res.status(200).json({reason: "OK"});
+            }
+            if (pictureAffected.shared_with.includes(req.user._id) && req.user._id !== affectedUserId){
                 console.log("Found user within array, removing...");
                 pictureAffected.shared_with = pictureAffected.shared_with.filter((value, index, array) => value !== req.user._id);
                 await pictureAffected.save();
