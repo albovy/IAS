@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { UserService } from 'src/app/_services/user.service'
+import { first } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-register',
@@ -11,9 +15,13 @@ export class RegisterComponent implements OnInit {
   loading = false;
   submitted = false;
   returnUrl = "";
+  hasError = false;
+  errorMessage = "";
 
   constructor(
     private formBuilder: FormBuilder,
+    private userService: UserService,
+    private router: Router,
   ) { 
     // redirect to home if already logged in
     
@@ -39,5 +47,22 @@ export class RegisterComponent implements OnInit {
     }
 
     this.loading = true;
+
+    this.userService.register(this.form.username.value, this.form.email.value, this.form.password.value)
+    .subscribe(
+        data => {
+          console.log(data);
+          if (data === 200){
+            this.router.navigate(['/login']);
+          }
+        },
+           
+        error => {
+          this.errorMessage = error.error.message;
+          this.hasError = true;
+          this.loading = false;
+        });
+
+
   }   
 }

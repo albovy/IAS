@@ -27,7 +27,16 @@ export class UserService {
             this.currentUserSubject.next(user);
             return user;
             
-        }), catchError(this.handleError));
+        }));
+  }
+
+  
+  register(username, email, password) {
+    return this.http.post( `${environment.apiUrl}/users`,{ username, email, password }, { observe: 'response' })
+        .pipe(map(response => {
+          console.log(response);
+            return response.status;
+        }));
   }
 
   logout() {
@@ -37,17 +46,17 @@ export class UserService {
     // this.currentUserSubject.next(null);
   }
 
-  handleError(error) {
-    let errorMessage = '';
-    if (error.error instanceof ErrorEvent) {
-        // client-side error
-        errorMessage = `Error: ${error.error.message}`;
-    } else {
-        // server-side error
-        errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
-    }
-    console.log(errorMessage);
-    return throwError(errorMessage);
-}
+//   handleError(error) {
+//     let errorMessage = '';
+//     if (error.error instanceof ErrorEvent) {
+//         // client-side error
+//         errorMessage = `Error: ${error.error.message}`;
+//     } else {
+//         // server-side error
+//         errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+//     }
+//     console.log(errorMessage);
+//     return throwError(errorMessage);
+// }
 
 }
