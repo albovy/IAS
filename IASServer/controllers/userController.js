@@ -35,8 +35,11 @@ class UserController {
       else if (!user) return res.status(404).json({message: "User not found"});
       else if (!user.verifyPassword(req.body.password))
         return res.status(403).json({message: "Password doesn't match"});
-      else if (user)
-        res.cookie('token', user.generateJwt(), {httpOnly: true}).status(200).json({ message: "OK" });
+      else if (user) {
+        var token = user.generateJwt();
+        // res.cookie('token', token, {httpOnly: true}).status(200).json({ message: "OK" });
+        return res.status(200).json(token)
+      }
       else next();
     });
   }

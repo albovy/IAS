@@ -49,12 +49,14 @@ export class LoginComponent implements OnInit {
     this.userService.login(this.form.username.value, this.form.password.value)
             .subscribe(
                 data => {
+                  if (data) {
                     //TODO: Navigate to the next page
                     // this.router.navigate();
+                  }
                 },
                 error => {
                     //TODO: show error message
-                    // this.alertService.error(error);
+                    console.log(error)
                     this.loading = false;
                 });
   }

@@ -7,29 +7,27 @@ import { catchError } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-  private currentUserSubject: BehaviorSubject<any>;
-  public currentUser: Observable<any>;
+  private currentUserToken: BehaviorSubject<string>;
 
   constructor(private http: HttpClient) {
-      this.currentUserSubject = new BehaviorSubject<any>(JSON.parse(localStorage.getItem('currentUser')));
-      this.currentUser = this.currentUserSubject.asObservable();
+      this.currentUserToken = new BehaviorSubject<string>(localStorage.getItem('userToken'));
   }
 
   public get currentUserValue() {
-    return this.currentUserSubject.value;
+    return this.currentUserToken.value;
   }
 
   login(username, password) {
-    return this.http.post( `${environment.apiUrl}/login`, { username, password })
-        .pipe(map(user => {
-            // store user details and jwt token in local storage to keep user logged in between page refreshes
-            localStorage.setItem('currentUser', JSON.stringify(user));
-            this.currentUserSubject.next(user);
-            return user;
-            
-        }));
-  }
+    return this.http.post( `${environment.apiUrl}/login`, { username, password }, { observe: 'response' })
+    .pipe(map(response => {
+      if (response.status === 200) {
+        localStorage.setItem('userToken', response.body.toString());
+        return true;
 
+      }
+      return false;
+    }));
+  }
   
   register(username, email, password) {
     return this.http.post( `${environment.apiUrl}/users`,{ username, email, password }, { observe: 'response' })
@@ -46,17 +44,5 @@ export class UserService {
     // this.currentUserSubject.next(null);
   }
 
-//   handleError(error) {
-//     let errorMessage = '';
-//     if (error.error instanceof ErrorEvent) {
-//         // client-side error
-//         errorMessage = `Error: ${error.error.message}`;
-//     } else {
-//         // server-side error
-//         errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
-//     }
-//     console.log(errorMessage);
-//     return throwError(errorMessage);
-// }
 
 }

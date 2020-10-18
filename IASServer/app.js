@@ -37,8 +37,13 @@ process.env.JWT_EXP = config.exp
 
 const jwtCheck = jwt({
   secret: process.env.JWT_SECRET,
-  getToken: (req) => req.cookies['token'],
-  algorithms: ['HS256']
+  algorithms: ['HS256'],
+  getToken: function fromHeader (req) {
+    if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
+        return req.headers.authorization.split(' ')[1];
+    } 
+    return null;
+  }
 });
 
 app.use('*', (req, res, next) => {
