@@ -19,7 +19,7 @@ var upload = multer({
 
         },
         filename: function (req, file, cb) {
-            var dest = './pictures';
+
             var _fileName = `${req.user._id}_${Date.now().toString()}${path.extname(file.originalname)}`;    
             cb(null, _fileName);
         }

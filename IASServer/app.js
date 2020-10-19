@@ -30,8 +30,8 @@ app.use(express.json());
 app.use(express.urlencoded({
   extended: false
 }));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors());
 process.env.JWT_SECRET = config.secret
 process.env.JWT_EXP = config.exp
 
