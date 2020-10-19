@@ -10,10 +10,12 @@ const { CastError } = require('mongoose/lib/error/cast');
 const User = require('../models/User');
 var upload = multer({
     limits: {
+        file: 1,
         fileSize: config.maxUploadSize
     },
     storage: multer.memoryStorage({
         destination: './pictures',
+        
         fileFilter: function(req, file, cb){
 
             
@@ -53,7 +55,11 @@ class PictureController{
 
         upload.single('fichero')(req, res, function (err) {
             if (err) {
-                return res.end("Something went wrong!");
+                console.log(err);
+                if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE'){
+                    return res.status(400).json({reason: "eres un pirulas"});
+                } 
+                return res.status(500).json({reason: "Internal Error"});
             }
             const fileName = req.file.originalname;
 
@@ -64,8 +70,6 @@ class PictureController{
 
             const encryptedBuffer = encryptBuffer(req.file.buffer);
             fs.writeFileSync(finalResolvedPath, encryptedBuffer);
-            
-            const fileName = req.file.filename;
 
             var picture = new Picture();
             picture.owner_id = req.user._id;
