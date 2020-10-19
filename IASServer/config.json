@@ -2,6 +2,6 @@
     "secret": "Ci23fWtahDYE3dfirAHrJhzrUEoslIxqwcDN9VNhRJCWf8Tyc1F1mqYrjGYF",
     "exp": "1h",
     "key": "53fd8763200b1a581471d07af9dca03479f0614e50080c66a73765be6955fb7c",
-    "iv": "cefaf6501f85d8fecc532cc0d65c2a7d"
-    
+    "iv": "cefaf6501f85d8fecc532cc0d65c2a7d",
+    "maxUploadSize": 10485760
 }
