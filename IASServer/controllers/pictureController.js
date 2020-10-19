@@ -1,15 +1,23 @@
 const multer = require('multer');
 const Picture = require('../models/Picture');
 var path = require('path');
-const { exception } = require('console');
-const { fstat, existsSync, unlinkSync } = require('fs');
+const fs =  require('fs');
+const crypto = require('crypto');
+
+const config = require('../config.json')
 
 const { CastError } = require('mongoose/lib/error/cast');
 const User = require('../models/User');
-const { EWOULDBLOCK } = require('constants');
 var upload = multer({
-    storage: multer.diskStorage({
+    storage: multer.memoryStorage({
         destination: './pictures',
+        fileFilter: function(req, file, cb){
+
+            
+
+
+
+        },
         filename: function (req, file, cb) {
             var dest = './pictures';
             var _fileName = `${req.user._id}_${Date.now().toString()}${path.extname(file.originalname)}`;    
@@ -17,6 +25,23 @@ var upload = multer({
         }
     })
     });
+
+const algorithm = 'aes-256-cbc'; 
+
+const encryptBuffer = (pictureBuffer) => {
+    const cypher = crypto.createCipheriv(algorithm, Buffer.from(config.key, "hex"), Buffer.from(config.iv, "hex"));
+    let encrypted = cypher.update(pictureBuffer);
+    encrypted = Buffer.concat([encrypted, cypher.final()]); 
+    return encrypted;
+}
+
+const decryptBuffer = (encryptedBuffer) => {
+    const decipher = crypto.createDecipheriv(algorithm, Buffer.from(config.key, "hex"), Buffer.from(config.iv, "hex"));
+    const decrypted = Buffer.concat([decipher.update(encryptedBuffer), decipher.final()]);
+    return decrypted;
+}
+
+
 
 class PictureController{
     constructor(){}
@@ -27,9 +52,14 @@ class PictureController{
             if (err) {
                 return res.end("Something went wrong!");
             }
+            const fileName = req.file.originalname;
 
-            const filePath = req.file.path;
-            const fileName = req.file.filename;
+            const finalResolvedPath = path.join(path.resolve(__dirname, '../pictures'), fileName);
+
+            console.log(req.file);
+
+            const encryptedBuffer = encryptBuffer(req.file.buffer);
+            fs.writeFileSync(finalResolvedPath, encryptedBuffer);
 
             var picture = new Picture();
             picture.owner_id = req.user._id;
@@ -58,15 +88,19 @@ class PictureController{
             if (!(req.user._id === response.owner_id || response.shared_with.includes(req.user._id)))
                 return res.status(403).json({message: "Unauthorized"});
 
-            if (!existsSync(resolvePicturePath)){
+            if (!fs.existsSync(resolvePicturePath)){
                 return res.status(404).json({reason: "Picture not found"});
             }
-            return res.download(resolvePicturePath, (err => {
-                if (err)
-                    console.log(err);
-            }) );
+
+            const fileBuffered = fs.readFileSync(resolvePicturePath);
+            const fileDecrypted = decryptBuffer(fileBuffered);
+
+            const base64Decrypted = fileDecrypted.toString('base64');
+
+            return res.json({filename: response.uri, rawdata: base64Decrypted});
         }
         catch (err){
+            console.log(err);
             if (err instanceof CastError)
                 return res.status(401).json({reason: "Invalid ID"});            
             return res.status(500).send();

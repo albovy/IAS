@@ -63,8 +63,6 @@ app.use(jwtCheck.unless({
 ]
 }));
 
-
-
 app.use('/api/login',loginRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/pictures', pictureRouter);
