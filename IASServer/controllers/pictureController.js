@@ -1,17 +1,16 @@
 const multer = require('multer');
 const Picture = require('../models/Picture');
 var path = require('path');
-const { exception } = require('console');
-const { fstat, existsSync, unlinkSync } = require('fs');
+const { existsSync, unlinkSync } = require('fs');
 
 const { CastError } = require('mongoose/lib/error/cast');
 const User = require('../models/User');
-const { EWOULDBLOCK } = require('constants');
+
 var upload = multer({
     storage: multer.diskStorage({
         destination: './pictures',
         filename: function (req, file, cb) {
-            var dest = './pictures';
+
             var _fileName = `${req.user._id}_${Date.now().toString()}${path.extname(file.originalname)}`;    
             cb(null, _fileName);
         }
@@ -28,7 +27,7 @@ class PictureController{
                 return res.end("Something went wrong!");
             }
 
-            const filePath = req.file.path;
+            
             const fileName = req.file.filename;
 
             var picture = new Picture();
