@@ -16,6 +16,9 @@ bower_components/
 
 # IDEs and editors
 .idea/
+.DS_Store
+
+IASServer/pictures/*
 
 # misc
 .sass-cache/
