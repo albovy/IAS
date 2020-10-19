@@ -61,13 +61,11 @@ class PictureController{
 
             console.log(req.file);
 
-<<<<<<< HEAD
+
             const encryptedBuffer = encryptBuffer(req.file.buffer);
             fs.writeFileSync(finalResolvedPath, encryptedBuffer);
-=======
             
             const fileName = req.file.filename;
->>>>>>> e19664d9d3e2dddbafd3f330d5a4269c30aaa99f
 
             var picture = new Picture();
             picture.owner_id = req.user._id;
