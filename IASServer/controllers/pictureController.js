@@ -166,6 +166,54 @@ class PictureController{
     }
 
 
+    async modifyPicture(req, res, next) {
+        
+        const pictureId = req.params.picture_id;
+        let foundPicture;
+
+        try{
+            foundPicture = await Picture.findById(pictureId);
+        }
+        catch (err) {
+            const error = new Error();
+            error.message = err;
+            return next(error);
+        }
+        
+        if (foundPicture == null){
+            const error = new Error();
+            error.status = 404;
+            error.message = 'Picture not found';
+            return next(error);
+        }
+
+        if (foundPicture.owner_id !== req.user._id){
+            const error = new Error();
+            error.status = 403;
+            error.message = 'Not the owner';
+            return next(error);
+        }
+
+        for (let [key, value] of Object.entries(req.body)) {
+            foundPicture[key] = value === null ? undefined : value;
+        }
+
+        foundPicture.save(null, (err, prod) => {
+            if (err){
+                console.warn(err);
+                const error = new Error();
+                error.status = 400;
+                error.message = err;
+                return next(error);
+            }
+            console.log(prod);
+            console.log("Modify OK");
+            //return res.sendStatus(200);
+            return res.status(200).json(prod); // TESTING?
+        });
+    }
+
+
     async getAllOwnedPictures (req, res, next) {
 
         try{
