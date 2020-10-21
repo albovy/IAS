@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { catchError } from 'rxjs/operators';
+import { Image } from '../_models/image';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -43,6 +44,5 @@ export class UserService {
     // localStorage.removeItem('currentUser');
     // this.currentUserSubject.next(null);
   }
-
 
 }

@@ -37,7 +37,6 @@ class UserController {
         return res.status(403).json({message: "Password doesn't match"});
       else if (user) {
         var token = user.generateJwt();
-        // res.cookie('token', token, {httpOnly: true}).status(200).json({ message: "OK" });
         return res.status(200).json(token)
       }
       else next();

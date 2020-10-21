@@ -21,4 +21,14 @@ export class ImageService {
         }));
   }
 
+  getAll() {
+    return this.http.get<Image[]>(`${environment.apiUrl}/pictures`, { observe: 'response'})
+        .pipe(map(response => {
+          if (response.status === 200) {
+            return response.body;  
+          }
+          
+        }))
+  }
+
 }
