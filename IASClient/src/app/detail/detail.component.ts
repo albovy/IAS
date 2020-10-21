@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ImageService } from 'src/app/_services/image.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 
 
@@ -10,14 +10,19 @@ import { Router } from '@angular/router';
   styleUrls: ['./detail.component.css']
 })
 export class DetailComponent implements OnInit {
+  @Input() id : string;
+
   isUserImage = false;
   constructor( 
     private imageService: ImageService,
     private router: Router,
+    private route: ActivatedRoute
     )
     {}
 
   ngOnInit(): void {
+    //TODO: Llamar al BE para pedir la informacion de la imagen.
+    this.route.data.subscribe(data => console.log(data));
   }
 
   onClickModify(){

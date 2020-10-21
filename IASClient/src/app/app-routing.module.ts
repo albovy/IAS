@@ -5,14 +5,15 @@ import { LoginComponent } from './login/login.component'
 import { RegisterComponent } from './register/register.component'
 import { DetailComponent } from './detail/detail.component';
 import { UploadComponent } from './upload/upload.component';
+import { Image } from './_models/image';
 
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'home', component: HomeComponent },
-  { path: 'detail', component: DetailComponent },
-  { path: 'upload', component: UploadComponent }
+  { path: 'detail/:id', component: DetailComponent },
+  { path: 'upload', component: UploadComponent}
 ];
 
 @NgModule({

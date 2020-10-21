@@ -3,6 +3,6 @@ export class Image {
     owner_id: string;
     username: string;
     description: string;
-    id: string;
+    _id: string;
     public: boolean;
 }

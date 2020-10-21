@@ -14,7 +14,7 @@ export class ImageService {
   } 
   
   detail(id) {
-    return this.http.get<Image>( `${environment.apiUrl}/pictures/download/`+id,{ observe: 'response' })
+    return this.http.get<Image>( `${environment.apiUrl}/pictures/`+id,{ observe: 'response' })
         .pipe(map(response => {
           console.log(response);
             return response.status;
