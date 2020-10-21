@@ -1,6 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+
+import { Component, OnInit } from '@angular/core';
 import { ImageService } from 'src/app/_services/image.service';
 import { Router, ActivatedRoute } from '@angular/router';
+
 
 
 
@@ -10,22 +12,37 @@ import { Router, ActivatedRoute } from '@angular/router';
   styleUrls: ['./detail.component.css']
 })
 export class DetailComponent implements OnInit {
-  @Input() id : string;
+  isUserImage = true;
+  modifying = false;
+  user = "@user";
+  description = "This is a description of the picture above";
 
-  isUserImage = false;
   constructor( 
     private imageService: ImageService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
     )
     {}
 
   ngOnInit(): void {
-    //TODO: Llamar al BE para pedir la informacion de la imagen.
-    this.route.data.subscribe(data => console.log(data));
+    const id = this.route.snapshot.paramMap.get('id');
+    this.imageService.detail(id)
+    .subscribe(
+        data => {
+          console.log(data);
+        },
+        error => {
+          console.log(error);
+        });
   }
-
+  deleteImage(){
+    
+  }
   onClickModify(){
-    this.router.navigate(['/upload']); //aqui habra que pasar la info o algo
-  }
+  this.modifying = true; 
+ }
+  onClickSave(){
+    this.modifying = false;
+ }
+ 
 }

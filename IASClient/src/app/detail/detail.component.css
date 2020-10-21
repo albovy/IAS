@@ -10,3 +10,9 @@ img {
 .footer_image{
     text-align: center;
 }
+textarea{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
