@@ -7,7 +7,7 @@ const crypto = require('crypto');
 const config = require('../config.json')
 
 const { CastError } = require('mongoose/lib/error/cast');
-const User = require('../models/User');
+const { parse } = require('path');
 var upload = multer({
     limits: {
         file: 1,
@@ -74,6 +74,8 @@ class PictureController{
             var picture = new Picture();
             picture.owner_id = req.user._id;
             picture.uri = fileName;
+            picture.desciption = req.body.description
+            picture.username = user.user.username
             picture.save(null, (err, prod) => {
                 if (err){
                     console.log(err);
@@ -95,7 +97,7 @@ class PictureController{
 
             const resolvePicturePath = path.join(path.resolve(__dirname, '../pictures'), response.uri);
 
-            if (!(req.user._id === response.owner_id || response.shared_with.includes(req.user._id)))
+            if (!(req.user._id === response.owner_id || response.public))
                 return res.status(403).json({message: "Unauthorized"});
 
             if (!fs.existsSync(resolvePicturePath)){
@@ -146,95 +148,20 @@ class PictureController{
         }
     }
 
-    async sharePicture(req, res, next) {
-        console.log('Share picture endpoint');
-        const pictureId = req.body.picture_id;
-        const userToSharedWithId = req.body.user_id;
-
-        if (pictureId == null || userToSharedWithId == null)
-            return res.status(403).json({reason: "Missing body parameters"});
-
-
-        const findPicturePromise = Picture.findById(pictureId);
-        const findUserPromise = User.findById(userToSharedWithId);
-
-        try{
-            const resultQueries = await Promise.all([findPicturePromise, findUserPromise]);
-            if (resultQueries.includes(null))
-                return res.status(403).json({reason: "Picture or user could not be found"});
-            console.log(resultQueries);
-            // Mirar que no sea el mismo usuario o ya este compartido
-
-            if (resultQueries[0].owner_id === resultQueries[1]._id || resultQueries[0].shared_with.includes(resultQueries[1]._id))
-                return res.status(403).json({reason: "Owner or already shared file"});
-
-            // Añadir al array
-            resultQueries[0].shared_with.push(userToSharedWithId);
-            await resultQueries[0].save();
-
-            return res.status(200).json({reason: "OK"});
-        }
-        catch (err){
-            console.log(err);
-            if (err instanceof CastError)
-                return res.status(401).json({reason: "Invalid ID"});            
-            return res.status(500).send();
-        }
-    }
 
     async getAllOwnedPictures (req, res, next) {
+        const skip = parseInt(req.query.skip);
+        const limit = parseInt(req.query.limit);
+
         // Endpoint para saber que fotografias tengo
         console.log('getAllOwnedPictures endpoint');
         console.log(`Requester user: ${req.user._id}`)
-        const myPictures = await Picture.find({owner_id: req.user._id});
+        const myPictures = await Picture.find({owner_id: req.user._id}).skip(skip).limit(limit);
 
         return res.status(200).json(myPictures);
     }
 
-    async unsharePicture(req, res, next) {
-        console.log('Unshare endpoint');
 
-        // Two scenarios: User is OWNER && wants to unshare to a specific user
-        //                User is NOT owner && wants to unshare specific picture
-
-        const affectedUserId = req.body.affected_user_id;
-        const pictureId = req.body.picture_id;
-
-        if (pictureId == null || affectedUser == null)
-            return res.status(403).json({reason: "Missing necessary params affected_user & picture_id"});
-
-        try{
-            const pictureAffected = Picture.findById(pictureId);
-
-            if (pictureAffected == null)
-                return res.status(404).json({reason: "Picture not found"});
-
-            if (pictureAffected.owner_id === req.user._id && affectedUser_id !== req.user._id){
-                console.log('Owner wants to unshare file from another user');
-                if (!pictureAffected.shared_with.includes(affectedUserId)){
-                    console.log('It is not shared with this user');
-                    return res.status(400).json({reason: "Not shared with this user"});
-                }
-
-                pictureAffected.shared_with = pictureAffected.shared_with.filter((value) => value !== affectedUserId);
-                await pictureAffected.save();
-                return res.status(200).json({reason: "OK"});
-            }
-            if (pictureAffected.shared_with.includes(req.user._id) && req.user._id !== affectedUserId){
-                console.log("Found user within array, removing...");
-                pictureAffected.shared_with = pictureAffected.shared_with.filter((value, index, array) => value !== req.user._id);
-                await pictureAffected.save();
-                return res.status(200).json({reason: "OK"});
-            }
-            return res.status(403).json({reason: "Picture is not shared to the specified user"});
-        }
-        catch (err){
-            console.log(err);
-            if (err instanceof CastError)
-                return res.status(401).json({reason: "Invalid ID"});            
-            return res.status(500).send();
-        }
-    }
 }
 
 module.exports = new PictureController();
