@@ -81,8 +81,8 @@ class PictureController{
             var picture = new Picture();
             picture.owner_id = req.user._id;
             picture.uri = fileName;
-            picture.description = req.body.description
-            picture.username = req.user.username
+            picture.description = req.body.description;
+            picture.username = req.user.username;
             picture.save(null, (err, prod) => {
                 if (err){
                     fs.unlinkSync(finalResolvedPath);

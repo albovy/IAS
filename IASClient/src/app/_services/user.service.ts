@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { catchError } from 'rxjs/operators';
-import { Picture } from '../_models/pictures';
+import { Image } from '../_models/image';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -43,16 +43,6 @@ export class UserService {
     // remove user from local storage and set current user to null
     // localStorage.removeItem('currentUser');
     // this.currentUserSubject.next(null);
-  }
-
-  getAll() {
-    return this.http.get<Picture[]>(`${environment.apiUrl}/pictures`, { observe: 'response'})
-        .pipe(map(response => {
-          if (response.status === 200) {
-            return response.body;  
-          }
-          
-        }))
   }
 
 }

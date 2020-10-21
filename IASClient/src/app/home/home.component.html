@@ -1,11 +1,11 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-4" *ngFor="item of test">
+        <div class="col-md-4" *ngFor="let picture of pictures" routerLink="/detail/{{picture.id}}">
             <div class="card mb-4">
                 <img class="card-img-top" src="https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg" alt="Card image cap">
                 <div class="card-body">
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <p class="card-text">{{picture.description}}</p>
                 </div>
             </div>
         </div>

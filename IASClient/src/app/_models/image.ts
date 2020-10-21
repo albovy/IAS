@@ -1,8 +1,8 @@
 export class Image {
-    filename: string;
-    content: string;
-    id: string;
+    uri: string;
+    owner_id: string;
     username: string;
     description: string;
-    private: boolean; //public or private
+    id: string;
+    public: boolean;
 }

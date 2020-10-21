@@ -10,9 +10,9 @@ import { UploadComponent } from './upload/upload.component';
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'home', component: HomeComponent }
+  { path: 'home', component: HomeComponent },
   { path: 'detail', component: DetailComponent },
-  { path: 'upload', component: UploadComponent },
+  { path: 'upload', component: UploadComponent }
 ];
 
 @NgModule({

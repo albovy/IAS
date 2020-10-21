@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from 'src/app/_services/user.service'
-import { Picture } from 'src/app/_models/pictures'
+import { ImageService } from '../_services/image.service'
+import { Image } from '../_models/image'
+import { RouterModule } from '@angular/router';
+
 
 @Component({
   selector: 'app-home',
@@ -9,15 +11,15 @@ import { Picture } from 'src/app/_models/pictures'
 })
 export class HomeComponent implements OnInit {
 
-  test : Picture[];
+  public pictures : Image[];
 
-  constructor(private userService: UserService) {
+  constructor(private imageService: ImageService) {
    }
 
   ngOnInit(): void {
-    this.userService.getAll().subscribe(
+    this.imageService.getAll().subscribe(
       data => {
-        this.test = data;
+        this.pictures = data;
         console.log(data)
         // if (data) {
           // this.router.navigate(['/home']);
