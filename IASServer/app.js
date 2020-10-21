@@ -49,7 +49,10 @@ const jwtCheck = jwt({
 app.use('*', (req, res, next) => {
   console.log(req.params);
   console.log(req.body);
-  console.log(req.cookies);
+  if (req.cookies){
+    console.log(req.cookies);
+  }
+  
   next();
 });
 
@@ -78,8 +81,11 @@ app.use(function (err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500).send();
+  if (req.app.get('env') === 'development'){
+    res.status(err.status || 500).json(err.message ? {reason: `${err.message}`}: {reason: "Not specified"});
+  }
+  else res.status(err.status || 500).send();
+
 });
 
 module.exports = app;

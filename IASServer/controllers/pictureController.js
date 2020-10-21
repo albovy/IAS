@@ -7,7 +7,9 @@ const crypto = require('crypto');
 const config = require('../config.json')
 
 const { CastError } = require('mongoose/lib/error/cast');
-const { parse } = require('path');
+const { ValidationError } = require('mongoose/lib/error/validation');
+
+
 var upload = multer({
     limits: {
         file: 1,
@@ -61,24 +63,39 @@ class PictureController{
                 } 
                 return res.status(500).json({reason: "Internal Error"});
             }
-            const fileName = req.file.originalname;
+            const fileName = `${req.user._id}_${Date.now().toString()}${path.extname(req.file.originalname)}`;
 
             const finalResolvedPath = path.join(path.resolve(__dirname, '../pictures'), fileName);
-
-            console.log(req.file);
-
-
             const encryptedBuffer = encryptBuffer(req.file.buffer);
-            fs.writeFileSync(finalResolvedPath, encryptedBuffer);
+
+            try{
+                fs.writeFileSync(finalResolvedPath, encryptedBuffer);
+            }
+            catch (err){
+                const error = new Error();
+                error.message = 'Couldnt write file to disk storage';
+                return next(error);
+            }
+            
 
             var picture = new Picture();
             picture.owner_id = req.user._id;
             picture.uri = fileName;
-            picture.desciption = req.body.description
-            picture.username = user.user.username
+            picture.description = req.body.description
+            picture.username = req.user.username
             picture.save(null, (err, prod) => {
                 if (err){
+                    fs.unlinkSync(finalResolvedPath);
+                    if (err instanceof ValidationError){
+                        const error = new Error();
+                        error.status = 400;
+                        error.message = 'Faltan elementos de la imagen';
+                        return next(error);
+                    }
                     console.log(err);
+                    const error = new Error();
+                    error.message = err.message;
+                    return next(error);
                 }
                 else console.log("OK");
                 return res.status(201).send();
@@ -150,15 +167,26 @@ class PictureController{
 
 
     async getAllOwnedPictures (req, res, next) {
-        const skip = parseInt(req.query.skip);
-        const limit = parseInt(req.query.limit);
 
-        // Endpoint para saber que fotografias tengo
-        console.log('getAllOwnedPictures endpoint');
-        console.log(`Requester user: ${req.user._id}`)
-        const myPictures = await Picture.find({owner_id: req.user._id}).skip(skip).limit(limit);
+        try{
+            const skip = parseInt(req.query.skip);
+            const limit = parseInt(req.query.limit);
 
-        return res.status(200).json(myPictures);
+            // Endpoint para saber que fotografias tengo
+            console.log('getAllOwnedPictures endpoint');
+            console.log(`Requester user: ${req.user._id}`)
+            const myPictures = await Picture.find({ $or: [{owner_id: req.user._id}, {public: true}]}).skip(skip).limit(limit);
+
+            return res.status(200).json(myPictures);
+        }
+        catch (err){
+            const error = new Error();
+            return next(error);
+        }
+
+        
+
+        
     }
 
 
