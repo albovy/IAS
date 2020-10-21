@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { catchError } from 'rxjs/operators';
+import { Picture } from '../_models/pictures';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -44,5 +45,14 @@ export class UserService {
     // this.currentUserSubject.next(null);
   }
 
+  getAll() {
+    return this.http.get<Picture[]>(`${environment.apiUrl}/pictures`, { observe: 'response'})
+        .pipe(map(response => {
+          if (response.status === 200) {
+            return response.body;  
+          }
+          
+        }))
+  }
 
 }

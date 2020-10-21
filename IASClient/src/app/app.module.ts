@@ -12,6 +12,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './_interceptors/auth.interceptor';
 import { DetailComponent } from './detail/detail.component';
 import { UploadComponent } from './upload/upload.component'
+import { HomeComponent } from './home/home.component'
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { UploadComponent } from './upload/upload.component'
     RegisterComponent,
     DetailComponent,
     UploadComponent
+    HomeComponent
   ],
   imports: [
     BrowserModule,
