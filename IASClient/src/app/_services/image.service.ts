@@ -30,5 +30,13 @@ export class ImageService {
           
         }))
   }
+  
+  upload(img, publicImg, description) {
+    return this.http.post( `${environment.apiUrl}/pictures`,{ img, publicImg, description }, { observe: 'response' })
+        .pipe(map(response => {
+          console.log(response);
+            return response.status;
+        }));
+  }
 
 }
