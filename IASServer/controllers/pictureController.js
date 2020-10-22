@@ -125,13 +125,39 @@ class PictureController{
             const fileDecrypted = decryptBuffer(fileBuffered);
 
             const base64Decrypted = fileDecrypted.toString('base64');
+            // export class Image {
+            //     uri: string;
+            //     owner_id: string;
+            //     username: string;
+            //     description: string;
+            //     _id: string;
+            //     public: boolean;
+            // }
 
-            return res.json({filename: response.uri, rawdata: base64Decrypted});
+            // Find username
+            // TODO: Ya viene en la imagen, tendriamos que asegurar la coherencia entre picture.username y picture.owner_id.username
+           // const pictureOwner = await User.findById(response.owner_id);
+            // if (pictureOwner == null){
+            //     const error = new Error();
+            //     error.status = 500;
+            //     error.message = 'No user could be found with the ID given in the picture'
+            //     return next(error);
+            // }
+
+            return res.json({
+                filename: response.uri,
+                rawdata: base64Decrypted,
+                owner_id: response.owner_id,
+                description: response.description,
+                _id: response._id,
+                public: response.public,
+                username: response.username
+            });
         }
         catch (err){
             console.log(err);
             if (err instanceof CastError)
-                return res.status(401).json({reason: "Invalid ID"});            
+                return res.status(400).json({reason: "Invalid ID"});            
             return res.status(500).send();
         }
     }
@@ -160,7 +186,7 @@ class PictureController{
         catch (err){
             console.log(err);
             if (err instanceof CastError)
-                return res.status(401).json({reason: "Invalid ID"});            
+                return res.status(400).json({reason: "Invalid ID"});            
             return res.status(500).send();
         }
     }
