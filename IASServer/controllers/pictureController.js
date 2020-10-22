@@ -83,6 +83,7 @@ class PictureController{
             picture.uri = fileName;
             picture.description = req.body.description;
             picture.username = req.user.username;
+            picture.public = req.body.public;
             picture.save(null, (err, prod) => {
                 if (err){
                     fs.unlinkSync(finalResolvedPath);
@@ -215,26 +216,41 @@ class PictureController{
 
 
     async getAllOwnedPictures (req, res, next) {
-
         try{
             const skip = parseInt(req.query.skip);
             const limit = parseInt(req.query.limit);
 
             // Endpoint para saber que fotografias tengo
             console.log('getAllOwnedPictures endpoint');
-            console.log(`Requester user: ${req.user._id}`)
-            const myPictures = await Picture.find({ $or: [{owner_id: req.user._id}, {public: true}]}).skip(skip).limit(limit);
+            console.log(`Requester user: ${req.user._id}`);
+            let myPictures = await Picture.find({ $or: [{owner_id: req.user._id}, {public: true}]}).skip(skip).limit(limit);
+            
+            myPictures =  myPictures.map(function(picture) {
+
+                const resolvePicturePath = path.join(path.resolve(__dirname, '../pictures'), picture.uri);
+
+                if (!fs.existsSync(resolvePicturePath)){
+                    return res.status(404).json({reason: "Picture not found"});
+                }
+
+                const fileBuffered = fs.readFileSync(resolvePicturePath);
+                const fileDecrypted = decryptBuffer(fileBuffered);
+
+                const base64Decrypted = fileDecrypted.toString('base64');
+                let json = JSON.parse(JSON.stringify(picture));
+                // console.log(json);
+
+                json['rawdata'] = base64Decrypted;
+                return json;
+            })
 
             return res.status(200).json(myPictures);
         }
         catch (err){
+            console.log(err)
             const error = new Error();
             return next(error);
         }
-
-        
-
-        
     }
 
 

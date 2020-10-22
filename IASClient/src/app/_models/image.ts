@@ -5,4 +5,5 @@ export class Image {
     description: string;
     _id: string;
     public: boolean;
+    rawdata: string;
 }
