@@ -13,7 +13,11 @@ import { AuthInterceptor } from './_interceptors/auth.interceptor';
 import { DetailComponent } from './detail/detail.component';
 import { UploadComponent } from './upload/upload.component'
 import { HomeComponent } from './home/home.component'
-//import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+
+
 
 @NgModule({
   declarations: [
@@ -23,7 +27,7 @@ import { HomeComponent } from './home/home.component'
     DetailComponent,
     UploadComponent,
     HomeComponent,
-   // MatSlideToggleModule
+    
   ],
   imports: [
     BrowserModule,
@@ -31,7 +35,9 @@ import { HomeComponent } from './home/home.component'
     FontAwesomeModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    MatSlideToggleModule,
+    BrowserAnimationsModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass:AuthInterceptor, multi:true}

@@ -5,6 +5,8 @@ import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { catchError } from 'rxjs/operators';
 import { Image } from '../_models/image';
+import jwt_decode from "jwt-decode";
+
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -38,11 +40,26 @@ export class UserService {
         }));
   }
 
+  public get needToken() {
+    // Devuelve true si no hay token o hay token y ha expirado
+    if (this.currentUserToken.value == null)
+      return true;
+    const currentTokenHeaders = jwt_decode(this.currentUserToken.value, {headers: true});
+    const expirationTimestamp = currentTokenHeaders.exp * 1000;
+
+    console.log(expirationTimestamp);
+    console.log(Date.now());
+    
+    
+    return expirationTimestamp <= Date.now();
+  }
+
   logout() {
     // TODO:
     // remove user from local storage and set current user to null
-    // localStorage.removeItem('currentUser');
-    // this.currentUserSubject.next(null);
+     localStorage.removeItem('currentUser');
+     this.currentUserToken.next(null);
   }
+
 
 }

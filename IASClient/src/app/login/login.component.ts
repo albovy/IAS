@@ -23,6 +23,10 @@ export class LoginComponent implements OnInit {
     private router: Router,
   ) { 
     // redirect to home if already logged in
+    if (!userService.needToken){
+      router.navigate(['home']);
+    }
+    
     
   }
 

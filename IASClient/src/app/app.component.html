@@ -3,11 +3,18 @@
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-    <a class="navbar-brand" href="#">AppName</a>
+    <a class="navbar-brand" href="/home">IAS Instagrom</a>
     <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
     </ul>
     
-    <a href="/login"> <fa-icon [icon]="faUser"></fa-icon> Login</a>
+
+    <a *ngIf="needToken; else elseBlock" href="/login"> <fa-icon [icon]="faUser"></fa-icon> Login</a>
+    <ng-template #elseBlock>
+      <a href="/logout">
+        Logout
+      </a>
+
+    </ng-template>
   </div>
 </nav>
 
