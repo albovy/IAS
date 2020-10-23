@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators';
+import { map, publishBehavior } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Image } from '../_models/image';
 
@@ -32,7 +32,12 @@ export class ImageService {
   }
   
   upload(img, publicImg, description) {
-    return this.http.post( `${environment.apiUrl}/pictures`,{ img, publicImg, description }, { observe: 'response' })
+    const formData = new FormData();
+    formData.append('fichero', img);
+    formData.append('description', description);
+    formData.append('public', publicImg);
+
+    return this.http.post( `${environment.apiUrl}/pictures`, formData, { observe: 'response' })
         .pipe(map(response => {
           console.log(response);
             return response.status;

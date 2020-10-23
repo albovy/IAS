@@ -50,7 +50,7 @@ export class UploadComponent implements OnInit {
     .subscribe(
         data => {
           console.log(data);
-          if (data === 200){
+          if (data === 201){
             this.router.navigate(['/home']);
           }
         },

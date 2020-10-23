@@ -13,6 +13,7 @@ import { AuthInterceptor } from './_interceptors/auth.interceptor';
 import { DetailComponent } from './detail/detail.component';
 import { UploadComponent } from './upload/upload.component'
 import { HomeComponent } from './home/home.component'
+//import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { HomeComponent } from './home/home.component'
     RegisterComponent,
     DetailComponent,
     UploadComponent,
-    HomeComponent
+    HomeComponent,
+   // MatSlideToggleModule
   ],
   imports: [
     BrowserModule,
