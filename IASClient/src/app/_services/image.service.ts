@@ -50,4 +50,13 @@ export class ImageService {
         return response;
     }));
   }
+
+  update(img_id, description){
+    return this.http.put( `${environment.apiUrl}/pictures/`+img_id, {img_id, description}, { observe: 'response' })
+    .pipe(map(response => {
+      console.log(response);
+        return response;
+    }));
+  }
+
 }

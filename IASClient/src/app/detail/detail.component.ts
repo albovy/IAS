@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { ImageService } from 'src/app/_services/image.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Image } from '../_models/image';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
 
 
 @Component({
@@ -16,11 +18,14 @@ export class DetailComponent implements OnInit {
   modifying = false;
   user = "";
   description = "[No description]";
+  descriptionForm: FormGroup;
+
 
   constructor( 
     private imageService: ImageService,
     private router: Router,
     private route: ActivatedRoute,
+    private formBuilder: FormBuilder,
     )
     {}
 
@@ -39,7 +44,13 @@ export class DetailComponent implements OnInit {
         error => {
           console.log(error);
         });
+    this.descriptionForm = this.formBuilder.group({
+      newDescription: [''],
+    });
   }
+
+  get form() { return this.descriptionForm.controls; }
+
   deleteImage(){
     this.imageService.delete(this.picture._id)
     .subscribe(
@@ -60,12 +71,21 @@ export class DetailComponent implements OnInit {
  }
   onClickSave(){
     this.modifying = false;
-    //TO DO:
-    //Pillar el contenido de text area y meterlo en this.picture.description
-    //console.log(this.picture.description);
-    //TO DO:
-    //CON PUT (CREAR EN IMAGE SERVICE TB)
-    //enviar picture a back otra vez cuando esté upload
- }
+    this.picture.description = this.form.newDescription.value;
+    this.imageService.update(this.picture._id, this.picture.description)
+    .subscribe(
+        data => {
+          console.log(data);
+          if (data.status === 200){
+            console.log('PICTURE UPDATED');
+            this.ngOnInit();
+          }
+        },
+           
+        error => {
+          console.log(error);
+        });
+  
+   }
  
 }

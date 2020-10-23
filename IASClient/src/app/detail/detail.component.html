@@ -19,8 +19,12 @@
         <p class="footer_image">{{description}}</p>
     </div>
     <div *ngIf="isUserImage && modifying">
-      <p><textarea ng-model="textareaDesc">{{description}}</textarea></p>
-      <button (click)="onClickSave()" class='btn'><i class="fa fa-save"></i></button>
+      <form class="form-description" [formGroup]="descriptionForm" (ngSubmit)="onClickSave()">
+        <div class="form-label-group">
+        <input class="form-control" placeholder="Insert new description here" formControlName="newDescription" id="newDescription">
+        </div>
+        <button class='btn' type="submit"><i class="fa fa-save"></i></button>
+      </form>
     </div>
-    </div>
+</div>
 </div>
