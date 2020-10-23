@@ -178,7 +178,7 @@ class PictureController{
             const pathResolved = path.join(path.resolve(__dirname, '../pictures'), pictureToBeDeleted.uri);
 
             console.log(pathResolved);
-            unlinkSync(pathResolved);
+            fs.unlinkSync(pathResolved);
             
             return res.status(200).json({reason: "OK"});
             

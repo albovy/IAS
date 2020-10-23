@@ -17,7 +17,7 @@ export class ImageService {
     return this.http.get<Image>( `${environment.apiUrl}/pictures/`+id,{ observe: 'response' })
         .pipe(map(response => {
           console.log(response);
-            return response.status;
+            return response;
         }));
   }
 
@@ -43,5 +43,11 @@ export class ImageService {
             return response.status;
         }));
   }
-
+  delete(img_id){
+    return this.http.delete( `${environment.apiUrl}/pictures/delete/`+img_id,  { observe: 'response' } )
+    .pipe(map(response => {
+      console.log(response);
+        return response;
+    }));
+  }
 }

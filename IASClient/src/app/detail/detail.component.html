@@ -1,14 +1,15 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
   <div class="card card-signin my-5">
     <div class="card-body">
       <div *ngIf="isUserImage">
-        <button (click)="deleteImage()">Delete</button>
+        <button (click)="deleteImage()" class="btn"><i class="fa fa-trash"></i></button>
+        <button (click)="onClickModify()" class="btn"><i class="fa fa-edit"></i></button>
       </div>
       <h5 class="card-title text-center"></h5>
       <div class="img-container"> 
-          <img src="assets/img/pruebaM.jpg">
+          <img src="data:image/png;base64,{{picture.rawdata}}">
       </div>
-      <br>
     </div>
     <p class="footer_image" id="user">{{user}}</p>
     <div *ngIf="isUserImage==false">
@@ -18,11 +19,8 @@
         <p class="footer_image">{{description}}</p>
     </div>
     <div *ngIf="isUserImage && modifying">
-      <p><textarea>{{description}}</textarea></p>
-      <button (click)="onClickSave()">Save</button>
-    </div>
-    <div *ngIf="isUserImage">
-      <button (click)="onClickModify()">Edit</button>
+      <p><textarea ng-model="textareaDesc">{{description}}</textarea></p>
+      <button (click)="onClickSave()" class='btn'><i class="fa fa-save"></i></button>
     </div>
     </div>
 </div>
