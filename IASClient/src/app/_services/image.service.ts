@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { map, publishBehavior } from 'rxjs/operators';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { catchError, map, publishBehavior } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Image } from '../_models/image';
+import { throwError } from 'rxjs';
 
 
 @Injectable({
@@ -14,11 +15,12 @@ export class ImageService {
   } 
   
   detail(id) {
-    return this.http.get<Image>( `${environment.apiUrl}/pictures/`+id,{ observe: 'response' })
-        .pipe(map(response => {
-          console.log(response);
-            return response;
-        }));
+    return this.http.get<Image>( `${environment.apiUrl}/pictures/`+id)
+      .pipe(
+        catchError((response: HttpErrorResponse) => {
+          return throwError(response);
+        })  
+      );
   }
 
   getAll() {

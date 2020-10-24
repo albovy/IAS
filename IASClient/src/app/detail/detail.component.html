@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
-  <div class="card card-signin my-5">
+  <div *ngIf="!isLoading else elseTemplate" class="card card-signin my-5">
     <div class="card-body">
       <div *ngIf="isUserImage">
         <button (click)="deleteImage()" class="btn"><i class="fa fa-trash"></i></button>
@@ -11,12 +11,12 @@
           <img src="data:image/png;base64,{{picture.rawdata}}">
       </div>
     </div>
-    <p class="footer_image" id="user">{{user}}</p>
-    <div *ngIf="isUserImage==false">
-      <p class="footer_image" id="description">{{description}}</p>
+    <p class="footer_image" id="user">{{picture.username}}</p>
+    <div *ngIf="!isUserImage">
+      <p class="footer_image" id="description">{{picture.description}}</p>
     </div>
     <div *ngIf="isUserImage && !modifying">
-        <p class="footer_image">{{description}}</p>
+        <p class="footer_image">{{picture.description}}</p>
     </div>
     <div *ngIf="isUserImage && modifying">
       <form class="form-description" [formGroup]="descriptionForm" (ngSubmit)="onClickSave()">
@@ -26,5 +26,18 @@
         <button class='btn' type="submit"><i class="fa fa-save"></i></button>
       </form>
     </div>
-</div>
+
+  </div>
+  <ng-template #elseTemplate>
+    <div class="card-body">
+      <h5 class="card-title text-center"></h5>
+      <div class="img-container"> 
+        <ngx-skeleton-loader appearance="square" [theme]="{ height: '200px',width: '200px'}"></ngx-skeleton-loader>
+      </div>
+    </div>
+    <ngx-skeleton-loader [theme]="{ height: '30px'}"></ngx-skeleton-loader>
+    <ngx-skeleton-loader [theme]="{ height: '30px'}"></ngx-skeleton-loader>
+
+  </ng-template>
+  
 </div>

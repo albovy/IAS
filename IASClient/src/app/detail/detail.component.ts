@@ -4,7 +4,7 @@ import { ImageService } from 'src/app/_services/image.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Image } from '../_models/image';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
+import { UserService } from '../_services/user.service';
 
 
 @Component({
@@ -16,9 +16,8 @@ export class DetailComponent implements OnInit {
   public picture : Image;
   isUserImage = false;
   modifying = false;
-  user = "";
-  description = "[No description]";
   descriptionForm: FormGroup;
+  isLoading = false;
 
 
   constructor( 
@@ -26,24 +25,27 @@ export class DetailComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
+    private userService: UserService
     )
     {}
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
-    console.log('snapshot'+this.route.snapshot);
-    this.imageService.detail(id)
-    .subscribe(
+    this.isLoading = true;
+    debugger;
+    const currentUser = this.userService.currentUsername;
+    this.imageService.detail(id).subscribe(
         data => {
-          console.log(data);
-          this.picture = data.body;
-          this.isUserImage = this.picture.public;
-          this.user = this.picture.username;
-          this.description = this.picture.description;
+          this.picture = data;
+          this.isLoading = false;
+          this.isUserImage = data.username === currentUser;
         },
         error => {
           console.log(error);
-        });
+          this.isLoading = false
+        }
+    );
+
     this.descriptionForm = this.formBuilder.group({
       newDescription: [''],
     });
@@ -66,9 +68,11 @@ export class DetailComponent implements OnInit {
           console.log(error);
         });
   }
+
   onClickModify(){
-  this.modifying = true; 
- }
+    this.modifying = true; 
+  }
+
   onClickSave(){
     this.modifying = false;
     this.picture.description = this.form.newDescription.value;

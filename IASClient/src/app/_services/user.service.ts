@@ -9,13 +9,19 @@ import { retry, catchError } from 'rxjs/operators';
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private currentUserToken: BehaviorSubject<string>;
+  private username: BehaviorSubject<string>;
 
   constructor(private http: HttpClient) {
       this.currentUserToken = new BehaviorSubject<string>(localStorage.getItem('userToken'));
+      this.username = new BehaviorSubject<string>("");
   }
 
   public get currentUserValue() {
     return this.currentUserToken.value;
+  }
+
+  public get currentUsername() {
+    return this.username.value;
   }
 
   login(username, password) {
@@ -24,6 +30,7 @@ export class UserService {
         if (response.status === 200) {
           localStorage.setItem('userToken', response.body.toString());
           this.currentUserToken.next(response.body.toString());
+          this.username.next(username);
           return true;
         }
       }),
