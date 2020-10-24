@@ -18,6 +18,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
+import { NgxDropzoneModule } from 'ngx-dropzone';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
     HttpClientModule,
     MatSlideToggleModule,
     BrowserAnimationsModule,
-    NgxSkeletonLoaderModule
+    NgxSkeletonLoaderModule,
+    NgxDropzoneModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass:AuthInterceptor, multi:true}

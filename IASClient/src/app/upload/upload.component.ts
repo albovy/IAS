@@ -11,7 +11,9 @@ import { Router } from '@angular/router';
 })
 export class UploadComponent implements OnInit {
   uploadForm: FormGroup;
-  img_value = "";
+  files: File[] = [];
+  hasError = false;
+  errorMsg = "";
 
   constructor(
     private formBuilder: FormBuilder,
@@ -28,35 +30,37 @@ export class UploadComponent implements OnInit {
   }
   get form() { return this.uploadForm.controls; }
 
-  onFileChange(event) {
-    
-    if (event.target.files.length > 0) {
-      const file = event.target.files[0];
-      this.uploadForm.patchValue({
-        fileSource: file
-      });
-      console.log(file);
-      this.img_value = file;
-
+  onFilesAdded(event) {
+    if (this.files.length === 0) {
+      this.files.push(...event.addedFiles);
     }
   }
+
+  onRemove(event) {
+		this.files.splice(this.files.indexOf(event), 1);
+  }
+  
   onSubmit() {
+    if (this.files.length > 0) {
+      this.imageService.upload(this.files[0], this.form.public.value, this.form.description.value)
+      .subscribe(
+          data => {
+            console.log(data);
+            if (data === 201){
+              this.router.navigate(['/home']);
+            }
+          },
+          error => {
+            console.log('Error uploading');
+            this.hasError = true;
 
-    //this.img_value = this.form.img.value.replace("C:\\fakepath\\", "");
-
-    console.log(this.img_value, this.form.public.value, this.form.description.value);
-
-    this.imageService.upload(this.img_value, this.form.public.value, this.form.description.value)
-    .subscribe(
-        data => {
-          console.log(data);
-          if (data === 201){
-            this.router.navigate(['/home']);
-          }
-        },
-        error => {
-          console.log('Error uploading');
-        });
+          });
+    }
+    else {
+      this.errorMsg = "No file selected";
+      this.hasError = true;
+    }
+    
   }
 
 }

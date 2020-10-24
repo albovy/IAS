@@ -5,26 +5,26 @@
 
 
         
- 
+      <div *ngIf="hasError" class="alert alert-danger" role="alert">
+        {{errorMsg}}
+      </div>
       <form class="form-upload" [formGroup]="uploadForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
-          <div class="form-label-group">
-            <label for="img">Image</label>
-            <input formControlName="img" id="img" type="file" class="form-control" (change)="onFileChange($event)">
-          </div>
-          
-          <div class="form-label-group">
-            
-            <label class="switch" for="public"></label>
-              <mat-slide-toggle class="form-control" formControlName="public">Public</mat-slide-toggle>
-
-          </div>
-          <div class="form-label-group">
-            <label for="description">Description:</label>
-            <input class="form-control" formControlName="description">
-          </div>
-          <button type="submit">
-              Upload
-          </button>
+        <div class="custom-dropzone" ngx-dropzone (change)="onFilesAdded($event)" [multiple]="false" [accept]="'image/*'">
+            <ngx-dropzone-label>Drop file here!</ngx-dropzone-label>
+            <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of files" [file]="f" [removable]="true" (removed)="onRemove(f)">
+            </ngx-dropzone-image-preview>
+        </div>  
+        <i style="float: right;"> Maximum of 1 file. </i>
+        <div class="form-label-group" style="margin-top: 10px;">
+          <mat-slide-toggle formControlName="public" color="primary">Public</mat-slide-toggle>
+        </div>
+        <div class="form-label-group" style="margin-top: 10px;">
+          <label for="description">Description:</label>
+          <input class="form-control" formControlName="description">
+        </div>
+        <button class="btn btn-secondary" type="submit" style="float: right; margin-top: 20px;">
+            Upload
+        </button>
         </form>
       </div>
     </div>
