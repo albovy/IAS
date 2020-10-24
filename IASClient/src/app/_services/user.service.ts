@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { BehaviorSubject, EMPTY, Observable, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { catchError } from 'rxjs/operators';
-import { Image } from '../_models/image';
-import jwt_decode from "jwt-decode";
+import { retry, catchError } from 'rxjs/operators';
 
 
 @Injectable({ providedIn: 'root' })
@@ -21,31 +19,65 @@ export class UserService {
   }
 
   login(username, password) {
-    return this.http.post( `${environment.apiUrl}/login`, { username, password }, { observe: 'response' })
-    .pipe(map(response => {
-      if (response.status === 200) {
-        localStorage.setItem('userToken', response.body.toString());
-        this.currentUserToken.next(response.body.toString());
-        return true;
+    return this.http.post( `${environment.apiUrl}/login`, { username, password }, {observe: 'response'}).pipe(
+      map(response => {
+        if (response.status === 200) {
+          localStorage.setItem('userToken', response.body.toString());
+          this.currentUserToken.next(response.body.toString());
+          return true;
+        }
+      }),
+      catchError(error => {
+        let errorMsg: string;
+        if (error.error instanceof ErrorEvent) {
+            errorMsg = `Error: ${error.error.message}`;
+        } else {
+            errorMsg = this.getServerErrorMessage(error);
+        }
 
-      }
-      return false;
-    }));
+        return throwError(errorMsg);
+      })
+    );
   }
   
-  register(username, email, password) {
-    return this.http.post( `${environment.apiUrl}/users`,{ username, email, password }, { observe: 'response' })
-        .pipe(map(response => {
-          console.log(response);
-            return response.status;
-        }));
+  register(username, password) {
+    return this.http.post( `${environment.apiUrl}/users`,{ username, password }, { observe: 'response' }).pipe(
+      map(response => {
+        if (response.status === 200) {
+          return true;
+        }
+      }),
+      catchError(error => {
+        let errorMsg: string;
+        if (error.error instanceof ErrorEvent) {
+            errorMsg = `Error: ${error.error.message}`;
+        } else {
+            errorMsg = this.getServerErrorMessage(error);
+        }
+        return throwError(errorMsg);
+      })
+    );
   }
+
   logout() {
-    // TODO:
-    // remove user from local storage and set current user to null
      localStorage.removeItem('userToken');
      this.currentUserToken.next(null);
   }
 
+  private getServerErrorMessage(error: HttpErrorResponse): string {
+    switch (error.status) {
+        case 404: {
+            if (error.error.message) return error.error.message;
+            else return `Not Found: ${error.message}`;
+        }
+        case 403: {
+            if (error.error.message) return error.error.message;
+            return `Access Denied: ${error.message}`;
+        }
+        case 500: {
+            return `Internal Server Error: ${error.message}`;
+        }
+    }
+  }
 
 }

@@ -2,9 +2,13 @@
     <div class="card card-signin my-5">
       <div class="card-body">
         <h5 class="card-title text-center">Sign In</h5>
+        
+        <div *ngIf="hasError" class="alert alert-danger" role="alert">
+          {{errorMsg}}
+        </div>
         <form class="form-signin" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
           <div class="form-label-group">
-            <input type="text" class="form-control" placeholder="Email address" 
+            <input type="text" class="form-control" placeholder="Username" 
                    formControlName="username" required [ngClass]="{ 'is-invalid': submitted && form.username.errors }">
             <div *ngIf="submitted && form.username.errors" class="invalid-feedback">
                 <div *ngIf="form.username.errors.required">Username is required</div>

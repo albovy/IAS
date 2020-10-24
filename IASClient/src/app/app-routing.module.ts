@@ -5,15 +5,15 @@ import { LoginComponent } from './login/login.component'
 import { RegisterComponent } from './register/register.component'
 import { DetailComponent } from './detail/detail.component';
 import { UploadComponent } from './upload/upload.component';
-import { Image } from './_models/image';
+import { AuthGuardService } from './_services/auth-guard.service';
 
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'home', component: HomeComponent },
-  { path: 'detail/:id', component: DetailComponent },
-  { path: 'upload', component: UploadComponent},
+  { path: 'home', component: HomeComponent, canActivate: [AuthGuardService] },
+  { path: 'detail/:id', component: DetailComponent, canActivate: [AuthGuardService] },
+  { path: 'upload', component: UploadComponent, canActivate: [AuthGuardService]},
   { path: '*', redirectTo: 'home'}
 ];
 

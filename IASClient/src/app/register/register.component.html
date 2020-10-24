@@ -15,14 +15,6 @@
           </div>
 
           <div class="form-label-group">
-            <input type="email" class="form-control" placeholder="Email address" 
-                   formControlName="email" [ngClass]="{ 'is-invalid': submitted && form.email.errors }">
-            <div *ngIf="submitted && form.email.errors" class="invalid-feedback">
-                <div *ngIf="form.username.errors">Invalid format</div>
-            </div>
-          </div>
-
-          <div class="form-label-group">
             <input type="password" class="form-control" placeholder="Password" 
                    formControlName="password" required minlength="6"
                    [ngClass]="{ 'is-invalid': submitted && form.password.errors }">

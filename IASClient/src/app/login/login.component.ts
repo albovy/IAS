@@ -15,6 +15,8 @@ export class LoginComponent implements OnInit {
   loading = false;
   submitted = false;
   returnUrl = "";
+  errorMsg = "";
+  hasError = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -23,19 +25,12 @@ export class LoginComponent implements OnInit {
     private router: Router,
   ) { 
     
-    
   }
 
   ngOnInit(): void {
-    // IF token -> HOME
-    console.log(this.userService.currentUserValue);
-    
      if (this.userService.currentUserValue != null){
        this.router.navigate(['home']);
      }
-
-
-
 
     this.loginForm = this.formBuilder.group({
       username: [''],
@@ -55,7 +50,6 @@ export class LoginComponent implements OnInit {
     }
 
     this.loading = true;
-
     this.userService.login(this.form.username.value, this.form.password.value)
             .subscribe(
                 data => {
@@ -64,8 +58,8 @@ export class LoginComponent implements OnInit {
                   }
                 },
                 error => {
-                    //TODO: show error message
-                    console.log(error)
+                    this.hasError = true;
+                    this.errorMsg = error;
                     this.loading = false;
                 });
   }
