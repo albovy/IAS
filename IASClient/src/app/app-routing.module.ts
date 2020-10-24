@@ -14,6 +14,7 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'detail/:id', component: DetailComponent },
   { path: 'upload', component: UploadComponent},
+  { path: '*', redirectTo: 'home'}
 ];
 
 @NgModule({

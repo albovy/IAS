@@ -56,52 +56,56 @@ class PictureController{
     uploadPicture(req, res, next)  {
 
         upload.single('fichero')(req, res, function (err) {
-            if (err) {
-                console.log(err);
-                if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE'){
-                    return res.status(400).json({reason: "eres un pirulas"});
-                } 
-                return res.status(500).json({reason: "Internal Error"});
-            }
-            const fileName = `${req.user._id}_${Date.now().toString()}${path.extname(req.file.originalname)}`;
-
-            const finalResolvedPath = path.join(path.resolve(__dirname, '../pictures'), fileName);
-            const encryptedBuffer = encryptBuffer(req.file.buffer);
-
-            try{
-                fs.writeFileSync(finalResolvedPath, encryptedBuffer);
-            }
-            catch (err){
-                const error = new Error();
-                error.message = 'Couldnt write file to disk storage';
-                return next(error);
-            }
-            
-
-            var picture = new Picture();
-            picture.owner_id = req.user._id;
-            picture.uri = fileName;
-            picture.description = req.body.description;
-            picture.username = req.user.username;
-            picture.public = req.body.public;
-            picture.save(null, (err, prod) => {
-                if (err){
-                    fs.unlinkSync(finalResolvedPath);
-                    if (err instanceof ValidationError){
-                        const error = new Error();
-                        error.status = 400;
-                        error.message = 'Faltan elementos de la imagen';
-                        return next(error);
-                    }
+            try {
+                if (err) {
                     console.log(err);
+                    if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE'){
+                        return res.status(400).json({reason: "eres un pirulas"});
+                    } 
+                    return res.status(500).json({reason: "Internal Error"});
+                }
+                const fileName = `${req.user._id}_${Date.now().toString()}${path.extname(req.file.originalname)}`;
+    
+                const finalResolvedPath = path.join(path.resolve(__dirname, '../pictures'), fileName);
+                const encryptedBuffer = encryptBuffer(req.file.buffer);
+    
+                try{
+                    fs.writeFileSync(finalResolvedPath, encryptedBuffer);
+                }
+                catch (err){
                     const error = new Error();
-                    error.message = err.message;
+                    error.message = 'Couldnt write file to disk storage';
                     return next(error);
                 }
-                else console.log("OK");
-                return res.status(201).send();
-            });
-
+                
+    
+                var picture = new Picture();
+                picture.owner_id = req.user._id;
+                picture.uri = fileName;
+                picture.description = req.body.description;
+                picture.username = req.user.username;
+                picture.public = req.body.public;
+                picture.save(null, (err, prod) => {
+                    if (err){
+                        fs.unlinkSync(finalResolvedPath);
+                        if (err instanceof ValidationError){
+                            const error = new Error();
+                            error.status = 400;
+                            error.message = 'Faltan elementos de la imagen';
+                            return next(error);
+                        }
+                        console.log(err);
+                        const error = new Error();
+                        error.message = err.message;
+                        return next(error);
+                    }
+                    else console.log("OK");
+                    return res.status(201).send();
+                });
+            }
+            catch (err) {
+                return res.status(500).json({reason: "Internal Error"});
+            }
         });
     }
 
