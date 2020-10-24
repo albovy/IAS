@@ -29,10 +29,10 @@ export class HomeComponent implements OnInit {
       },
       error => {
           //TODO: show error message
-          if (error.status === 401){
-            return this.router.navigateByUrl('/login');
-          }
-          console.log(error)
+          // if (error.status === 401){
+          //   return this.router.navigateByUrl('/login');
+          // }
+          // console.log(error)
           // this.loading = false;
       }
     );

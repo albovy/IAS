@@ -19,23 +19,16 @@ export class AppComponent {
   ) { }
 
   ngOnInit(): void {
-    this.isLogged = false
-
-    const needToken = this.userService.needToken;
-    console.log(needToken);
-    
-    
-    if (needToken){
-      console.log('Redirect to login');
-      this.router.navigate(['login']);      
-    }
+    this.isLogged = false;
   }
 
-  public get needToken(): boolean {
-    const x = this.userService.needToken;
-    console.log(x);
-    return x;
-    
-
+  public get tokenFound() {
+    return this.userService.currentUserValue !== null;
   }
+
+  public logout() {
+    this.userService.logout();
+    this.router.navigate(['login']);
+  }
+
 }

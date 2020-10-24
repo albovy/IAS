@@ -8,9 +8,9 @@
     </ul>
     
 
-    <a *ngIf="needToken; else elseBlock" href="/login"> <fa-icon [icon]="faUser"></fa-icon> Login</a>
+    <a *ngIf="!tokenFound; else elseBlock" href="/login"> <fa-icon [icon]="faUser"></fa-icon> Login</a>
     <ng-template #elseBlock>
-      <a href="/logout">
+      <a role="button" (click)="logout()">
         Logout
       </a>
 

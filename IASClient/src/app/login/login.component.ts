@@ -22,15 +22,21 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
   ) { 
-    // redirect to home if already logged in
-    if (!userService.needToken){
-      router.navigate(['home']);
-    }
     
     
   }
 
   ngOnInit(): void {
+    // IF token -> HOME
+    console.log(this.userService.currentUserValue);
+    
+     if (this.userService.currentUserValue != null){
+       this.router.navigate(['home']);
+     }
+
+
+
+
     this.loginForm = this.formBuilder.group({
       username: [''],
       password: ['']

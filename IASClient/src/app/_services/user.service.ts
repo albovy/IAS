@@ -25,6 +25,7 @@ export class UserService {
     .pipe(map(response => {
       if (response.status === 200) {
         localStorage.setItem('userToken', response.body.toString());
+        this.currentUserToken.next(response.body.toString());
         return true;
 
       }
@@ -39,25 +40,10 @@ export class UserService {
             return response.status;
         }));
   }
-
-  public get needToken() {
-    // Devuelve true si no hay token o hay token y ha expirado
-    if (this.currentUserToken.value == null)
-      return true;
-    const currentTokenHeaders = jwt_decode(this.currentUserToken.value, {headers: true});
-    const expirationTimestamp = currentTokenHeaders.exp * 1000;
-
-    console.log(expirationTimestamp);
-    console.log(Date.now());
-    
-    
-    return expirationTimestamp <= Date.now();
-  }
-
   logout() {
     // TODO:
     // remove user from local storage and set current user to null
-     localStorage.removeItem('currentUser');
+     localStorage.removeItem('userToken');
      this.currentUserToken.next(null);
   }
 
