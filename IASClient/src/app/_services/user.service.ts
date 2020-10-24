@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { BehaviorSubject, EMPTY, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { retry, catchError } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 
 
 @Injectable({ providedIn: 'root' })
@@ -13,7 +13,7 @@ export class UserService {
 
   constructor(private http: HttpClient) {
       this.currentUserToken = new BehaviorSubject<string>(localStorage.getItem('userToken'));
-      this.username = new BehaviorSubject<string>("");
+      this.username = new BehaviorSubject<string>(localStorage.getItem('username'));
   }
 
   public get currentUserValue() {
@@ -29,6 +29,7 @@ export class UserService {
       map(response => {
         if (response.status === 200) {
           localStorage.setItem('userToken', response.body.toString());
+          localStorage.setItem('username', username);
           this.currentUserToken.next(response.body.toString());
           this.username.next(username);
           return true;

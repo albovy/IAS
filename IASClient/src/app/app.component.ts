@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { faSignOutAlt, faUser } from '@fortawesome/free-solid-svg-icons';
 import { UserService } from './_services/user.service';
 import { Router } from '@angular/router';
 @Component({
@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 export class AppComponent {
   title = 'IASClient';
   faUser = faUser
+  faExit = faSignOutAlt
   
   isLogged = false
 

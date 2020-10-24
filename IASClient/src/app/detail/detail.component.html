@@ -3,8 +3,12 @@
   <div *ngIf="!isLoading else elseTemplate" class="card card-signin my-5">
     <div class="card-body">
       <div *ngIf="isUserImage">
-        <button (click)="deleteImage()" class="btn"><i class="fa fa-trash"></i></button>
-        <button (click)="onClickModify()" class="btn"><i class="fa fa-edit"></i></button>
+        <button (click)="deleteImage()" class="btn">
+          <fa-icon [icon]="faTrash"></fa-icon>
+        </button>
+        <button (click)="onClickModify()" class="btn">
+          <fa-icon [icon]="faEdit"></fa-icon>
+        </button>
       </div>
       <h5 class="card-title text-center"></h5>
       <div class="img-container"> 
@@ -23,7 +27,9 @@
         <div class="form-label-group">
         <input class="form-control" placeholder="Insert new description here" formControlName="newDescription" id="newDescription">
         </div>
-        <button class='btn' type="submit"><i class="fa fa-save"></i></button>
+        <button class='btn' type="submit">
+          <fa-icon [icon]="faSave"></fa-icon>
+        </button>
       </form>
     </div>
 

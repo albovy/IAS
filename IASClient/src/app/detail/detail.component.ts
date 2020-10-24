@@ -5,6 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Image } from '../_models/image';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../_services/user.service';
+import { faEdit, faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 
 
 @Component({
@@ -18,7 +19,9 @@ export class DetailComponent implements OnInit {
   modifying = false;
   descriptionForm: FormGroup;
   isLoading = false;
-
+  faSave = faSave;
+  faEdit = faEdit;
+  faTrash = faTrashAlt
 
   constructor( 
     private imageService: ImageService,
@@ -32,7 +35,6 @@ export class DetailComponent implements OnInit {
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     this.isLoading = true;
-    debugger;
     const currentUser = this.userService.currentUsername;
     this.imageService.detail(id).subscribe(
         data => {
