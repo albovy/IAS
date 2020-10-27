@@ -1,11 +1,14 @@
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ImageService } from 'src/app/_services/image.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Image } from '../_models/image';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../_services/user.service';
 import { faEdit, faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
+
+import {MatSlideToggle, MatSlideToggleModule, MatSlideToggleChange} from '@angular/material/slide-toggle';
+
 
 
 @Component({
@@ -21,7 +24,10 @@ export class DetailComponent implements OnInit {
   isLoading = false;
   faSave = faSave;
   faEdit = faEdit;
-  faTrash = faTrashAlt
+  faTrash = faTrashAlt;
+  public isPublic: boolean;
+  @ViewChild('toggler')
+  matSlideToggle: MatSlideToggle;
 
   constructor( 
     private imageService: ImageService,
@@ -41,6 +47,9 @@ export class DetailComponent implements OnInit {
           this.picture = data;
           this.isLoading = false;
           this.isUserImage = data.username === currentUser;
+          this.isPublic = data.public;
+          console.log(this.isPublic);
+          
         },
         error => {
           console.log(error);
@@ -77,14 +86,15 @@ export class DetailComponent implements OnInit {
 
   onClickSave(){
     this.modifying = false;
-    this.picture.description = this.form.newDescription.value;
-    this.imageService.update(this.picture._id, this.picture.description)
+    
+    this.imageService.update(this.picture._id, {description: this.form.newDescription.value})
     .subscribe(
         data => {
           console.log(data);
           if (data.status === 200){
             console.log('PICTURE UPDATED');
-            this.ngOnInit();
+            this.picture.description = this.form.newDescription.value;
+            //this.ngOnInit();
           }
         },
            
@@ -93,5 +103,33 @@ export class DetailComponent implements OnInit {
         });
   
    }
+
+   
+    onPublicAttributeChanged(ob: MatSlideToggleChange) {
+      console.log(ob.checked);
+      let matSlideToggle: MatSlideToggle = ob.source;
+
+      // De momento actualizo aqui, aunque podriamos usar tambien el disquete
+      
+
+      this.imageService.update(this.picture._id, {public: ob.checked}).subscribe(
+        data => {
+          console.log(data);
+          if (data.status === 200){
+            console.log('PICTURE UPDATED');
+            this.isPublic = ob.checked;
+            //this.ngOnInit();
+          }
+        },
+           
+        error => {
+          console.log(error);
+        });
+
+        
+      
+
+
+    } 
  
 }

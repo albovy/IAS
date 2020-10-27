@@ -53,8 +53,8 @@ export class ImageService {
     }));
   }
 
-  update(img_id, description){
-    return this.http.put( `${environment.apiUrl}/pictures/`+img_id, {img_id, description}, { observe: 'response' })
+  update(img_id, data){
+    return this.http.put( `${environment.apiUrl}/pictures/`+img_id, data, { observe: 'response' })
     .pipe(map(response => {
       console.log(response);
         return response;

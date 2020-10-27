@@ -9,18 +9,19 @@
         <button (click)="onClickModify()" class="btn">
           <fa-icon [icon]="faEdit"></fa-icon>
         </button>
+        <mat-slide-toggle  #toggler checked={{isPublic}} (change)="onPublicAttributeChanged($event)"  color="primary">Public</mat-slide-toggle>
       </div>
       <h5 class="card-title text-center"></h5>
       <div class="img-container"> 
           <img src="data:image/png;base64,{{picture.rawdata}}">
       </div>
     </div>
-    <p class="footer_image" id="user">{{picture.username}}</p>
+    <p class="footer_image" id="user">Picture owner: {{picture.username}}</p>
     <div *ngIf="!isUserImage">
-      <p class="footer_image" id="description">{{picture.description}}</p>
+      <p class="footer_image" id="description">Description: {{picture.description}}</p>
     </div>
     <div *ngIf="isUserImage && !modifying">
-        <p class="footer_image">{{picture.description}}</p>
+        <p class="footer_image">Description: {{picture.description}}</p>
     </div>
     <div *ngIf="isUserImage && modifying">
       <form class="form-description" [formGroup]="descriptionForm" (ngSubmit)="onClickSave()">
