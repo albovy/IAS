@@ -16,7 +16,10 @@ img {
 }
 .footer_image{
     text-align: center;
+    margin-left: 15px;
+    margin-right: 10px;
 }
+
 input{
     display: block;
     margin-left: auto;

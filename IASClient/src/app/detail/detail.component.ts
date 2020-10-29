@@ -8,6 +8,7 @@ import { UserService } from '../_services/user.service';
 import { faEdit, faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 
 import {MatSlideToggle, MatSlideToggleModule, MatSlideToggleChange} from '@angular/material/slide-toggle';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 
 
@@ -25,6 +26,7 @@ export class DetailComponent implements OnInit {
   faSave = faSave;
   faEdit = faEdit;
   faTrash = faTrashAlt;
+  faTimes = faTimes;
   public isPublic: boolean;
   @ViewChild('toggler')
   matSlideToggle: MatSlideToggle;
@@ -84,6 +86,11 @@ export class DetailComponent implements OnInit {
     this.modifying = true; 
   }
 
+  cancelEdit() {
+    //TODO: reset values
+    this.modifying = false;
+  }
+
   onClickSave(){
     this.modifying = false;
     
@@ -110,8 +117,6 @@ export class DetailComponent implements OnInit {
       let matSlideToggle: MatSlideToggle = ob.source;
 
       // De momento actualizo aqui, aunque podriamos usar tambien el disquete
-      
-
       this.imageService.update(this.picture._id, {public: ob.checked}).subscribe(
         data => {
           console.log(data);
@@ -121,15 +126,9 @@ export class DetailComponent implements OnInit {
             //this.ngOnInit();
           }
         },
-           
         error => {
           console.log(error);
         });
-
-        
-      
-
-
     } 
  
 }

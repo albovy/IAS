@@ -6,17 +6,20 @@
         <button (click)="deleteImage()" class="btn">
           <fa-icon [icon]="faTrash"></fa-icon>
         </button>
-        <button (click)="onClickModify()" class="btn">
+        <button *ngIf="!modifying" (click)="onClickModify()" class="btn">
           <fa-icon [icon]="faEdit"></fa-icon>
         </button>
-        <mat-slide-toggle  #toggler checked={{isPublic}} (change)="onPublicAttributeChanged($event)"  color="primary">Public</mat-slide-toggle>
+        <button *ngIf="modifying" (click)="cancelEdit()" class="btn">
+          <fa-icon [icon]="faTimes"></fa-icon>
+        </button>
+        <mat-slide-toggle #toggler checked={{isPublic}} (change)="onPublicAttributeChanged($event)" color="primary">Public</mat-slide-toggle>
       </div>
       <h5 class="card-title text-center"></h5>
       <div class="img-container"> 
           <img src="data:image/png;base64,{{picture.rawdata}}">
       </div>
     </div>
-    <p class="footer_image" id="user">Picture owner: {{picture.username}}</p>
+    <p class="footer_image" id="user">Owner: {{picture.username}}</p>
     <div *ngIf="!isUserImage">
       <p class="footer_image" id="description">Description: {{picture.description}}</p>
     </div>
@@ -25,9 +28,8 @@
     </div>
     <div *ngIf="isUserImage && modifying">
       <form class="form-description" [formGroup]="descriptionForm" (ngSubmit)="onClickSave()">
-        <div class="form-label-group">
-        <input class="form-control" placeholder="Insert new description here" formControlName="newDescription" id="newDescription">
-        </div>
+        <textarea class="form-control" name="w3review" rows="10" [(ngModel)]="picture.description" formControlName="newDescription">
+        </textarea>
         <button class='btn' type="submit">
           <fa-icon [icon]="faSave"></fa-icon>
         </button>
