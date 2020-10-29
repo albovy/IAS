@@ -2,7 +2,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-4" *ngFor="let picture of pictures" routerLink="/detail/{{picture._id}}">
-            <div class="card mb-4">
+            <div class="card mb-4 h-100">
                 <img class="card-img-top" src="data:image/png;base64,{{picture.rawdata}}" alt="Card image cap">
                 <div class="card-body">
                     <p class="card-text">{{picture.description}}</p>

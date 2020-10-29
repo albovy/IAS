@@ -52,6 +52,7 @@ export class UploadComponent implements OnInit {
           },
           error => {
             console.log('Error uploading');
+            this.errorMsg = "Insert a description, please";
             this.hasError = true;
 
           });
