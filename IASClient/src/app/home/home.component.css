@@ -3,3 +3,8 @@
     height: 25vw;
     object-fit: cover;
 }
+.card-text{
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
