@@ -19,6 +19,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 import { NgxDropzoneModule } from 'ngx-dropzone';
+import { NotfoundComponent } from './notfound/notfound.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { NgxDropzoneModule } from 'ngx-dropzone';
     DetailComponent,
     UploadComponent,
     HomeComponent,
+    NotfoundComponent,
     
   ],
   imports: [
