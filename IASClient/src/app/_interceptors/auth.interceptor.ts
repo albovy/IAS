@@ -46,7 +46,7 @@ export class AuthInterceptor implements HttpInterceptor {
     private handleError(response: HttpErrorResponse, routeUrl:string) {
         if (routeUrl === '/login') return throwError(response);
         else if (response.status === 401 || response.status === 403){
-            alert('Token not valid or not present. Redirecting to login')
+            //alert('Token not valid or not present. Redirecting to login')
             this.userService.logout();
             this.router.navigate(['login']);
         }

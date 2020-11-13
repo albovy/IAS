@@ -56,6 +56,8 @@ export class UserService {
         }
       }),
       catchError(error => {
+        console.log("Caught error");
+        
         let errorMsg: string;
         if (error.error instanceof ErrorEvent) {
             errorMsg = `Error: ${error.error.message}`;
@@ -82,6 +84,11 @@ export class UserService {
             if (error.error.message) return error.error.message;
             return `Access Denied: ${error.message}`;
         }
+        case 422: {
+          if (error.error.message) return error.error.message;
+            return `User already existing: ${error.message}`;
+        }
+          
         case 500: {
             return `Internal Server Error: ${error.message}`;
         }
