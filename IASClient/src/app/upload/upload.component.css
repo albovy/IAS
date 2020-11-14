@@ -55,3 +55,41 @@ input:checked + .slider:before {
 .slider.round:before {
     border-radius: 50%;
 }
+
+.btn {
+    z-index: 1;
+    overflow: hidden;
+    background: transparent;
+    position: relative;
+    padding: 8px 50px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 1em;
+    letter-spacing: 2px;
+    transition: 0.2s ease;
+    font-weight: bold;
+    margin: 5px 0px;
+}
+.btn.btn-secondary {
+    border: 4px solid var(--blue);
+    color: var(--black);
+}
+.btn.btn-secondary:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0%;
+    height: 100%;
+    background: var(--blue);
+    z-index: -1;
+    transition: 0.2s ease;
+}
+.btn.btn-secondary:hover {
+    color: var(--white);
+    background: var(--blue);
+    transition: 0.2s ease;
+}
+.btn.btn-secondary:hover:before {
+    width: 100%;
+}

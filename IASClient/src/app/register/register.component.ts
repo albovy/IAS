@@ -89,7 +89,7 @@ export class RegisterComponent implements OnInit {
     }
 
     if (this.checkStrength(this.registerForm.controls["password"].value) < 20){
-      this.errorMessage = "Password is not strong.";
+      this.errorMessage = "Password is not strong enough: try adding uppercase and lowercase letters, numbers or symbols.";
       this.hasError = true;
       this.loading = false;
       return;
