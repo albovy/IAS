@@ -21,6 +21,8 @@ import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 import { NgxDropzoneModule } from 'ngx-dropzone';
 import { NotfoundComponent } from './notfound/notfound.component';
 
+import { RecaptchaModule } from 'ng-recaptcha';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -42,7 +44,8 @@ import { NotfoundComponent } from './notfound/notfound.component';
     MatSlideToggleModule,
     BrowserAnimationsModule,
     NgxSkeletonLoaderModule,
-    NgxDropzoneModule
+    NgxDropzoneModule, 
+    RecaptchaModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass:AuthInterceptor, multi:true}

@@ -23,13 +23,12 @@
                 <div *ngIf="form.password.errors.required">Password is required</div>
             </div>
           </div>
-
-          <button [disabled]="loading" class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">
+          <re-captcha class="captcha" (resolved)="resolved($event)" siteKey="6LctAeMZAAAAAElKJycOcBWWe6OQ-GXi87CP_WiB"></re-captcha>
+          <button [disabled]="loading || !recaptchaStatus" class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">
             <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>  
                 SIGN IN
             </button>
         </form>
-
         <a class="btn btn-lg btn-secondary btn-block text-uppercase" href="/register">REGISTER</a>
       </div>
     </div>

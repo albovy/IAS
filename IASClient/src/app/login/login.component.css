@@ -94,3 +94,12 @@
 .btn.btn-secondary:hover:before {
   width: 100%;
 }
+.captcha {
+  float: right;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}

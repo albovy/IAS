@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from 'src/app/_services/user.service'
-import { first } from 'rxjs/operators';
+import { RecaptchaService } from 'src/app/_services/recaptcha.service';
 
 
 @Component({
@@ -17,12 +17,14 @@ export class LoginComponent implements OnInit {
   returnUrl = "";
   errorMsg = "";
   hasError = false;
+  recaptchaStatus = false;
 
   constructor(
     private formBuilder: FormBuilder,
     private userService: UserService,
     private route: ActivatedRoute,
     private router: Router,
+    private recaptchaService: RecaptchaService,
   ) { 
     
   }
@@ -63,4 +65,16 @@ export class LoginComponent implements OnInit {
                     this.loading = false;
                 });
   }
+
+  resolved(captchaResponse: string) {
+    this.recaptchaService.validate(captchaResponse)
+      .subscribe(
+        data => {
+          this.recaptchaStatus = data;
+          console.log(data);
+        }
+      )
+  }
+
+
 }   
