@@ -13,6 +13,7 @@ const config = require('./config.json')
 const loginRouter = require('./routes/login')
 const usersRouter = require('./routes/users');
 const pictureRouter = require('./routes/picture');
+const validationRouter = require('./routes/validation');
 
 const app = express();
 
@@ -32,8 +33,11 @@ app.use(express.urlencoded({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
-process.env.JWT_SECRET = config.secret
-process.env.JWT_EXP = config.exp
+process.env.JWT_SECRET = config.secret;
+process.env.JWT_EXP = config.exp;
+process.env.CAPTCHA_SECRET = config.googleReCaptchaSecret;
+process.env.CAPTCHA_URL = config.googleReCaptchaUrl;
+
 
 const jwtCheck = jwt({
   secret: process.env.JWT_SECRET,
@@ -59,6 +63,7 @@ app.use('*', (req, res, next) => {
 jwtCheck.unless = unless;
 app.use(jwtCheck.unless({
   path: [
+    '/api/validation',
     '/api/login', {
     url: '/api/users',
     methods: ['POST']
@@ -69,6 +74,8 @@ app.use(jwtCheck.unless({
 app.use('/api/login',loginRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/pictures', pictureRouter);
+app.use('/api/validation', validationRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
