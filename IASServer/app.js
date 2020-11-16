@@ -18,7 +18,7 @@ const validationRouter = require('./routes/validation');
 const app = express();
 
 
-const mongoDB = "mongodb://localhost:27017/iasdb";
+const mongoDB = "mongodb://database:27017/iasdb";
 //BD
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true});
 mongoose.Promise = global.Promise;
