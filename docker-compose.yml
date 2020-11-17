@@ -8,11 +8,16 @@ services:
   - "3000:3000" # specify port mapping
   depends_on: 
     - database
+  volumes: 
+    - "../Certifies/:/Certifies"
  
  front: # name of the second service
   build: IASClient # specify the directory of the Dockerfile
   ports:
   - "4200:4200" #specify ports mapping
+  volumes: 
+  - "../Certifies/:/Certifies"
+
  
  database: # name of the third service
   image: mongo # specify image to build container from

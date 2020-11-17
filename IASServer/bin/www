@@ -7,6 +7,11 @@
 var app = require('../app');
 var debug = require('debug')('iasserver:server');
 var http = require('http');
+const https = require('https');
+const fs = require('fs');
+
+const tlsServerKey = fs.readFileSync('/Certifies/localhost.key');
+const tlsServerCrt = fs.readFileSync('/Certifies/localhost.crt');
 
 /**
  * Get port from environment and store in Express.
@@ -15,11 +20,17 @@ var http = require('http');
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
+const httpsOptions = {
+  key: tlsServerKey,
+  cert: tlsServerCrt
+};
+var server = https.createServer(httpsOptions, app);
+
 /**
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+// var server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
