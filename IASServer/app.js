@@ -15,7 +15,9 @@ const usersRouter = require('./routes/users');
 const pictureRouter = require('./routes/picture');
 const validationRouter = require('./routes/validation');
 
+const helmet = require('helmet');
 const app = express();
+app.use(helmet());
 
 const mongoDB = "mongodb://database:27017/iasdb";
 
