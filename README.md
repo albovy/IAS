@@ -9,7 +9,7 @@ What things you need to install the software and how to install them
 ```
 - NPM
 - NODE JS 12
-- DOCER (If you want to deploy in containers)
+- DOCKER (If you want to deploy in containers)
 ```
 
 ## Authors
